@@ -1,5 +1,4 @@
 import scrapy
-
 from env import game
 
 
@@ -26,19 +25,17 @@ class GameSpider(scrapy.Spider):
             yield scrapy.Request(self.url + str(aid), cookies=self.cookies)
 
     def parse(self, response):
-        downlink = response.css('tr:first-child a::attr(href)').get()
+        trs = response.css('tr')
+        if len(trs) == 0:
+            return
 
-        if downlink is not None:
-            cdk = response.css('tr:last-child > td:last-child').re_first(
-                '\d{6}')
+        gift = trs[1].css('a::attr(href)').get()
+        if gift == '敬请期待':
+            gift = None
 
-            gift = response.css('tr:nth-child(2) a::attr(href)').get().strip()
-            if gift == '敬请期待':
-                gift = None
-
-            yield {
-                'id': response.url.split('?aid=')[1],
-                'download': downlink.strip(),
-                'gift': gift,
-                'cdk': cdk
-            }
+        yield {
+            'id': response.url.split('?aid=')[1],
+            'download': trs[0].css('a::attr(href)').get(),
+            'gift': gift,
+            'cdk': trs[2].css('td:last-child').re_first('\d{6}')
+        }
