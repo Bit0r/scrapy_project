@@ -1,5 +1,4 @@
 *.pyc
 *.csv
-env.py
 requests.seen
 spider.state
