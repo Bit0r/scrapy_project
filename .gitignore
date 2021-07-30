@@ -1,4 +1,6 @@
 *.pyc
 *.csv
+*.log
+*.ipynb
 requests.seen
 spider.state
