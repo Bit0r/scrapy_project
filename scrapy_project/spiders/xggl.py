@@ -2,6 +2,7 @@ from hashlib import md5
 
 import scrapy
 from env import xggl
+from scrapy.mail import MailSender
 
 
 class XgglSpider(scrapy.Spider):
@@ -35,3 +36,5 @@ class XgglSpider(scrapy.Spider):
 
     def parse(self, response):
         self.logger.warning(response.json())
+        mailer = MailSender()
+        mailer.send(to=[xggl['mail']], subject='易班打卡', body=response.text)
